@@ -1,10 +1,10 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-from catboost import CatBoostRegressor
+from catboost import CatBoostRegressor, Pool
 
 # ------------------------------
-# Load CatBoost model
+# Load the CatBoost model
 # ------------------------------
 @st.cache_resource
 def load_model():
@@ -18,7 +18,7 @@ model = load_model()
 # UI Layout
 # ------------------------------
 st.title("🏘️ Real Estate Price Predictor")
-st.markdown("Enter the property details below to estimate the price.")
+st.markdown("Enter the property details below to estimate the price (trained on Lahore data).")
 
 # Inputs
 city = st.selectbox("City", ["Lahore", "Karachi", "Islamabad", "Other"])
@@ -30,7 +30,7 @@ size = st.number_input("Size of Property (in square feet)", min_value=0, step=50
 
 # Predict button
 if st.button("Predict Price"):
-    # Prepare input
+    # Create input DataFrame
     input_data = pd.DataFrame([{
         "city": city,
         "area": area,
@@ -40,14 +40,19 @@ if st.button("Predict Price"):
         "size": size
     }])
 
-    # Convert categorical features to category dtype
+    # Set categorical columns as category dtype
     cat_features = ['city', 'area', 'location']
     for col in cat_features:
         input_data[col] = input_data[col].astype("category")
 
-    # Predict log(price), then reverse the log1p transform
-    predicted_log_price = model.predict(input_data)[0]
+    # Create Pool for prediction
+    input_pool = Pool(data=input_data, cat_features=cat_features)
+
+    # Predict log price
+    predicted_log_price = model.predict(input_pool)[0]
+
+    # Reverse log1p transform
     predicted_price = np.expm1(predicted_log_price)
 
-    # Display result
+    # Show result
     st.success(f"🏷️ Estimated Property Price: PKR {predicted_price:,.0f}")
