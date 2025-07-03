@@ -34,7 +34,16 @@ area = st.text_input("Area (e.g., DHA Phase 6)")
 location = st.text_input("Location (e.g., DHA Defence)")
 bedrooms = st.number_input("Number of Bedrooms", min_value=0, step=1)
 baths = st.number_input("Number of Bathrooms", min_value=0, step=1)
-size = st.number_input("Size of Property (in square feet)", min_value=0, step=50)
+
+# Size input choice
+size_unit = st.radio("How would you like to enter the property size?", ["Square Feet", "Marlas"])
+
+if size_unit == "Square Feet":
+    size = st.number_input("Size (in square feet)", min_value=0, step=50)
+else:
+    marlas = st.number_input("Size (in marlas)", min_value=0.0, step=0.5)
+    size = marlas * 272.25
+    st.markdown(f"📐 Converted Size: **{size:,.0f} sq. feet**")
 
 # Predict button
 if st.button("Predict Price"):
