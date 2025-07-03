@@ -18,10 +18,18 @@ model = load_model()
 # UI Layout
 # ------------------------------
 st.title("🏘️ Real Estate Price Predictor")
-st.markdown("Enter the property details below to estimate the price (trained on Lahore data).")
+st.markdown("Enter the property details below to estimate the property price in PKR.")
+
+# Expanded list of cities
+cities = [
+    'Lahore', 'Karachi', 'Islamabad', 'Multan', 'Faisalabad',
+    'Peshawar', 'Quetta', 'Rawalpindi', 'Murree', 'Gujranwala',
+    'Attock', '2_FECHS', 'Bahawalpur', 'Sargodha', 'Sialkot',
+    'Hyderabad', 'Abbottabad', 'Jhelum', 'Okara', 'Other'
+]
 
 # Inputs
-city = st.selectbox("City", ["Lahore", "Karachi", "Islamabad", "Other"])
+city = st.selectbox("City", cities)
 area = st.text_input("Area (e.g., DHA Phase 6)")
 location = st.text_input("Location (e.g., DHA Defence)")
 bedrooms = st.number_input("Number of Bedrooms", min_value=0, step=1)
